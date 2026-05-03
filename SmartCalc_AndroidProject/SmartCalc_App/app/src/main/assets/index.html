@@ -1,0 +1,1677 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>حاسبة ذكية | Ahmed El-aref</title>
+  <style>
+/* ================================================================
+   SmartCalc — style.css
+   Modern Dark UI | Arabic RTL | Blue Accent Palette
+================================================================ */
+
+/* ------------------------------------------------------------------
+   1. CSS Variables & Tokens
+------------------------------------------------------------------ */
+:root {
+  --bg-base:        #0a0f1e;
+  --bg-surface:     #111827;
+  --bg-elevated:    #1a2236;
+  --bg-hover:       #1f2d45;
+
+  --blue-500:       #3b82f6;
+  --blue-400:       #60a5fa;
+  --blue-300:       #93c5fd;
+  --blue-glow:      rgba(59, 130, 246, 0.25);
+
+  --accent:         #00d4ff;
+  --accent-glow:    rgba(0, 212, 255, 0.2);
+
+  --green:          #10b981;
+  --green-light:    rgba(16, 185, 129, 0.12);
+  --green-border:   rgba(16, 185, 129, 0.35);
+  --green-glow:     rgba(16, 185, 129, 0.2);
+
+  --red:            #ef4444;
+  --red-light:      rgba(239, 68, 68, 0.10);
+  --red-border:     rgba(239, 68, 68, 0.35);
+  --red-glow:       rgba(239, 68, 68, 0.2);
+
+  --gold:           #f59e0b;
+
+  --text-primary:   #f1f5f9;
+  --text-secondary: #94a3b8;
+  --text-muted:     #4a5568;
+
+  --border:         rgba(255,255,255,0.07);
+  --border-focus:   rgba(59, 130, 246, 0.6);
+
+  --font-arabic:    'Tajawal', 'Segoe UI', Tahoma, 'Arial', sans-serif;
+  --font-mono:      'Consolas', 'Courier New', monospace;
+
+  --radius-sm:  8px;
+  --radius-md:  14px;
+  --radius-lg:  20px;
+  --radius-xl:  28px;
+
+  --shadow-card: 0 8px 40px rgba(0,0,0,0.5), 0 1px 0 rgba(255,255,255,0.04) inset;
+  --shadow-btn:  0 4px 20px rgba(59,130,246,0.35);
+}
+
+/* ------------------------------------------------------------------
+   2. Reset & Base
+------------------------------------------------------------------ */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: var(--font-arabic);
+  background-color: var(--bg-base);
+  color: var(--text-primary);
+  min-height: 100vh;
+  direction: rtl;
+  text-align: right;
+  background-image:
+    radial-gradient(ellipse 60% 40% at 70% 10%, rgba(59,130,246,0.08) 0%, transparent 60%),
+    radial-gradient(ellipse 40% 30% at 10% 80%, rgba(0,212,255,0.05) 0%, transparent 60%),
+    linear-gradient(180deg, #0a0f1e 0%, #07111f 100%);
+  background-attachment: fixed;
+}
+
+/* ------------------------------------------------------------------
+   3. Header / Navbar
+------------------------------------------------------------------ */
+.header {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  background: rgba(10, 15, 30, 0.9);
+  border-bottom: 1px solid var(--border);
+  padding: 0 24px;
+}
+
+.header-inner {
+  max-width: 1100px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0;
+  padding: 10px 0 12px;
+}
+
+/* ── Owner Name ── */
+.owner-name {
+  font-family: var(--font-arabic);
+  font-size: 1.3rem;
+  font-weight: 900;
+  letter-spacing: 2px;
+  color: var(--text-primary);
+  text-align: center;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 10px;
+  text-transform: uppercase;
+  background: linear-gradient(90deg, var(--blue-400), var(--accent), var(--blue-400));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: shimmer 4s linear infinite;
+  background-size: 200% auto;
+}
+
+.owner-dot {
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--accent);
+  box-shadow: 0 0 8px var(--accent);
+  -webkit-text-fill-color: initial; /* dots keep their color */
+  flex-shrink: 0;
+}
+
+/* Nav */
+.nav {
+  display: flex;
+  gap: 8px;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 5px;
+}
+
+.nav-btn {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 9px 22px;
+  border-radius: var(--radius-sm);
+  border: none;
+  background: transparent;
+  color: var(--text-secondary);
+  font-family: var(--font-arabic);
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  white-space: nowrap;
+}
+
+.nav-btn:hover { color: var(--text-primary); background: rgba(255,255,255,0.06); }
+
+.nav-btn.active {
+  background: linear-gradient(135deg, var(--blue-500), #2563eb);
+  color: #fff;
+  box-shadow: 0 2px 12px rgba(59,130,246,0.4);
+}
+
+.nav-icon { font-size: 0.95rem; }
+
+/* ------------------------------------------------------------------
+   4. Main Layout
+------------------------------------------------------------------ */
+.main {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 36px 16px 60px;
+}
+
+.page { display: none; animation: fadeSlideUp 0.4s ease forwards; }
+.page.active { display: block; }
+
+/* ------------------------------------------------------------------
+   5. Page Hero
+------------------------------------------------------------------ */
+.page-hero { text-align: center; margin-bottom: 28px; }
+
+.page-title {
+  font-size: clamp(1.7rem, 5vw, 2.5rem);
+  font-weight: 900;
+  line-height: 1.2;
+  margin-bottom: 8px;
+}
+
+.accent {
+  color: var(--accent);
+  text-shadow: 0 0 30px var(--accent-glow);
+}
+
+.page-subtitle {
+  font-size: 0.93rem;
+  color: var(--text-secondary);
+  margin-bottom: 14px;
+}
+
+.title-line {
+  width: 60px; height: 3px;
+  background: linear-gradient(90deg, var(--blue-500), var(--accent));
+  border-radius: 99px;
+  margin: 0 auto;
+  animation: expand-line 0.6s ease forwards;
+}
+
+/* ------------------------------------------------------------------
+   6. Card
+------------------------------------------------------------------ */
+.card {
+  background: var(--bg-surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-card);
+  overflow: hidden;
+  position: relative;
+}
+
+.card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0; height: 1px;
+  background: linear-gradient(90deg, transparent, var(--blue-500), var(--accent), transparent);
+  opacity: 0.6;
+}
+
+.card-body { padding: 28px 24px 24px; }
+
+/* ------------------------------------------------------------------
+   7. Form Fields (Installments page)
+------------------------------------------------------------------ */
+.field-group { margin-bottom: 20px; }
+
+.field-label {
+  display: flex; align-items: center; gap: 8px;
+  font-size: 0.85rem; font-weight: 600;
+  color: var(--text-secondary);
+  margin-bottom: 9px;
+  text-transform: uppercase; letter-spacing: 0.5px;
+}
+
+.input-wrapper { position: relative; display: flex; align-items: center; }
+
+.field-input {
+  width: 100%;
+  padding: 13px 18px; padding-left: 54px;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  color: var(--text-primary);
+  font-family: var(--font-mono); font-size: 1rem; font-weight: 500;
+  transition: border-color 0.2s, box-shadow 0.2s, background 0.2s;
+  outline: none;
+  direction: ltr; text-align: right;
+}
+
+.field-input::placeholder {
+  color: var(--text-muted); font-family: var(--font-arabic);
+  font-size: 0.88rem; direction: rtl;
+}
+
+.field-input:focus {
+  border-color: var(--border-focus);
+  box-shadow: 0 0 0 3px var(--blue-glow);
+  background: var(--bg-hover);
+}
+
+.field-input[type=number]::-webkit-inner-spin-button,
+.field-input[type=number]::-webkit-outer-spin-button { -webkit-appearance: none; }
+.field-input[type=number] { -moz-appearance: textfield; }
+
+.input-unit {
+  position: absolute; left: 14px;
+  font-size: 0.75rem; font-weight: 700;
+  color: var(--blue-400); font-family: var(--font-arabic);
+  background: rgba(59,130,246,0.12);
+  padding: 3px 6px; border-radius: 6px;
+  pointer-events: none;
+}
+
+.field-error {
+  display: block; font-size: 0.8rem;
+  color: var(--red); margin-top: 6px; min-height: 18px;
+  animation: fadeIn 0.2s ease;
+}
+
+/* ------------------------------------------------------------------
+   8. Duration Selector
+------------------------------------------------------------------ */
+.duration-selector { display: grid; grid-template-columns: repeat(3,1fr); gap: 10px; }
+
+.dur-btn {
+  padding: 12px 8px;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border);
+  background: var(--bg-elevated);
+  color: var(--text-secondary);
+  font-family: var(--font-arabic); font-size: 0.93rem; font-weight: 600;
+  cursor: pointer; transition: all 0.22s ease; text-align: center;
+}
+
+.dur-btn:hover { border-color: var(--blue-500); color: var(--blue-400); background: var(--bg-hover); }
+
+.dur-btn.active {
+  background: linear-gradient(135deg, rgba(59,130,246,0.2), rgba(0,212,255,0.1));
+  border-color: var(--blue-400); color: var(--accent);
+  box-shadow: 0 0 14px var(--accent-glow);
+}
+
+/* ------------------------------------------------------------------
+   9. Action Buttons (shared)
+------------------------------------------------------------------ */
+.action-row { display: flex; gap: 12px; margin-top: 24px; }
+
+.btn-calc {
+  flex: 1;
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+  padding: 14px 24px;
+  border-radius: var(--radius-md); border: none;
+  background: linear-gradient(135deg, var(--blue-500) 0%, #1d4ed8 100%);
+  color: #fff; font-family: var(--font-arabic);
+  font-size: 1rem; font-weight: 700;
+  cursor: pointer; box-shadow: var(--shadow-btn);
+  transition: all 0.22s ease; overflow: hidden;
+}
+
+.btn-calc:hover { transform: translateY(-2px); box-shadow: 0 8px 30px rgba(59,130,246,0.5); }
+.btn-calc:active { transform: translateY(0); }
+
+.btn-reset {
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+  padding: 14px 20px;
+  border-radius: var(--radius-md); border: 1px solid var(--border);
+  background: transparent; color: var(--text-secondary);
+  font-family: var(--font-arabic); font-size: 0.93rem; font-weight: 600;
+  cursor: pointer; transition: all 0.22s ease; white-space: nowrap;
+}
+
+.btn-reset:hover { background: var(--bg-elevated); color: var(--text-primary); border-color: rgba(255,255,255,0.15); }
+
+.btn-icon { font-size: 1rem; }
+
+/* ------------------------------------------------------------------
+   10. Results Panel — Installments
+------------------------------------------------------------------ */
+.results-panel {
+  display: none;
+  border-top: 1px solid var(--border);
+  padding: 24px;
+  background: linear-gradient(180deg, rgba(59,130,246,0.03) 0%, transparent 100%);
+  animation: fadeSlideUp 0.45s cubic-bezier(0.22,1,0.36,1) forwards;
+}
+
+.results-title {
+  font-size: 0.82rem; font-weight: 700;
+  color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.8px;
+  margin-bottom: 18px;
+  display: flex; align-items: center; gap: 8px;
+}
+
+.results-grid { display: grid; gap: 11px; }
+
+.result-item {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 13px 16px;
+  background: var(--bg-elevated); border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  transition: transform 0.2s;
+}
+
+.result-item:hover { transform: translateX(-3px); }
+.accent-item    { border-color: rgba(59,130,246,0.25); background: rgba(59,130,246,0.06); }
+.highlight-item { border-color: rgba(0,212,255,0.35); background: linear-gradient(135deg, rgba(0,212,255,0.08), rgba(59,130,246,0.06)); padding: 17px 16px; }
+
+.result-label { font-size: 0.85rem; color: var(--text-secondary); font-weight: 500; }
+.result-value { font-family: var(--font-mono); font-size: 0.97rem; font-weight: 500; color: var(--blue-300); }
+.result-value.big { font-size: 1.35rem; font-weight: 700; color: var(--accent); text-shadow: 0 0 20px var(--accent-glow); }
+.result-duration-note { margin-top: 12px; text-align: center; font-size: 0.8rem; color: var(--text-muted); font-style: italic; }
+
+/* Staggered animations */
+.results-grid .result-item:nth-child(1) { animation: fadeSlideUp 0.35s 0.05s ease both; }
+.results-grid .result-item:nth-child(2) { animation: fadeSlideUp 0.35s 0.12s ease both; }
+.results-grid .result-item:nth-child(3) { animation: fadeSlideUp 0.35s 0.20s ease both; }
+
+/* ------------------------------------------------------------------
+   11. Daily Calculator — Two Column Layout
+------------------------------------------------------------------ */
+.daily-columns {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 18px;
+  margin-bottom: 18px;
+}
+
+/* Each column card */
+.daily-col { display: flex; flex-direction: column; }
+
+/* Column header band */
+.daily-col-header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 14px 18px 12px;
+  border-bottom: 1px solid var(--border);
+}
+
+.col-title-wrap { display: flex; align-items: center; gap: 8px; }
+.col-icon { font-size: 1.1rem; }
+.col-title { font-size: 1rem; font-weight: 700; color: var(--text-primary); }
+
+.income-header  { background: rgba(16,185,129,0.06); }
+.expense-header { background: rgba(239,68,68,0.05); }
+
+/* Totals badge */
+.col-badge {
+  font-family: var(--font-mono); font-size: 0.85rem; font-weight: 700;
+  padding: 4px 10px; border-radius: 20px;
+  border: 1px solid var(--border);
+}
+
+.income-badge  { color: var(--green); background: var(--green-light); border-color: var(--green-border); }
+.expense-badge { color: var(--red);   background: var(--red-light);   border-color: var(--red-border);   }
+
+/* Table scroll wrapper */
+.table-scroll {
+  overflow-x: auto;
+  flex: 1;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Daily table */
+.daily-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.85rem;
+}
+
+.daily-table thead tr {
+  background: rgba(255,255,255,0.03);
+  border-bottom: 1px solid var(--border);
+}
+
+.daily-table th {
+  padding: 9px 10px;
+  color: var(--text-muted); font-weight: 600;
+  text-align: right; font-size: 0.78rem; text-transform: uppercase;
+  letter-spacing: 0.4px; white-space: nowrap;
+}
+
+.th-num  { width: 30px; text-align: center; }
+.th-del  { width: 32px; }
+.th-amt  { width: 90px; }
+
+/* Table rows */
+.daily-table tbody tr {
+  border-bottom: 1px solid rgba(255,255,255,0.04);
+  transition: background 0.15s;
+}
+
+.daily-table tbody tr:hover { background: rgba(255,255,255,0.02); }
+
+.daily-table td { padding: 7px 8px; vertical-align: middle; }
+
+/* Row number cell */
+.td-num {
+  text-align: center; color: var(--text-muted);
+  font-size: 0.75rem; font-family: var(--font-mono);
+  width: 30px;
+}
+
+/* Inline inputs inside table */
+.tbl-input {
+  width: 100%;
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+  color: var(--text-primary);
+  font-family: var(--font-arabic); font-size: 0.85rem;
+  padding: 4px 4px 3px;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.tbl-input:focus {
+  border-bottom-color: var(--blue-400);
+}
+
+.tbl-input::placeholder { color: var(--text-muted); font-size: 0.8rem; }
+
+/* Amount input — monospace, LTR */
+.tbl-amt-input {
+  direction: ltr; text-align: right;
+  font-family: var(--font-mono); font-size: 0.87rem;
+}
+
+.tbl-amt-input[type=number]::-webkit-inner-spin-button,
+.tbl-amt-input[type=number]::-webkit-outer-spin-button { -webkit-appearance: none; }
+.tbl-amt-input[type=number] { -moz-appearance: textfield; }
+
+/* Delete row button */
+.btn-del-row {
+  display: flex; align-items: center; justify-content: center;
+  width: 24px; height: 24px;
+  border-radius: 6px; border: none;
+  background: transparent; color: var(--text-muted);
+  font-size: 1rem; cursor: pointer;
+  transition: all 0.18s;
+}
+
+.btn-del-row:hover { background: var(--red-light); color: var(--red); }
+
+/* Add row button */
+.btn-add-row {
+  display: flex; align-items: center; justify-content: center; gap: 6px;
+  width: calc(100% - 32px);
+  margin: 10px 16px 14px;
+  padding: 9px;
+  border-radius: var(--radius-sm); border: 1px dashed rgba(255,255,255,0.12);
+  background: transparent; color: var(--text-muted);
+  font-family: var(--font-arabic); font-size: 0.85rem; font-weight: 600;
+  cursor: pointer; transition: all 0.2s;
+}
+
+.income-add:hover  { border-color: var(--green); color: var(--green); background: var(--green-light); }
+.expense-add:hover { border-color: var(--red);   color: var(--red);   background: var(--red-light);   }
+
+/* ------------------------------------------------------------------
+   12. Daily Action Bar
+------------------------------------------------------------------ */
+.daily-action-bar {
+  display: flex; gap: 12px;
+  margin-bottom: 16px;
+}
+
+.wide-btn { flex: 1; }
+
+/* ------------------------------------------------------------------
+   13. Daily Results Panel
+------------------------------------------------------------------ */
+.daily-results-panel {
+  border-top: none;
+  border-radius: var(--radius-xl);
+  border: 1px solid var(--border);
+  background: var(--bg-surface);
+  box-shadow: var(--shadow-card);
+  padding: 20px;
+}
+
+.daily-result-box {
+  display: flex; flex-direction: column; align-items: center; gap: 8px;
+  padding: 28px 20px;
+  border-radius: var(--radius-lg); border: 1px solid var(--border);
+  background: var(--bg-elevated); text-align: center;
+  transition: border-color 0.4s, background 0.4s, box-shadow 0.4s;
+}
+
+.daily-result-box.profit      { border-color: var(--green-border); background: var(--green-light); box-shadow: 0 0 30px var(--green-glow); }
+.daily-result-box.loss        { border-color: var(--red-border);   background: var(--red-light);   box-shadow: 0 0 30px var(--red-glow);   }
+.daily-result-box.break-even  { border-color: rgba(245,158,11,0.35); background: rgba(245,158,11,0.06); }
+
+.daily-icon   { font-size: 2.6rem; line-height: 1; animation: bounce-in 0.5s cubic-bezier(0.22,1,0.36,1) forwards; }
+.daily-label  { font-size: 0.97rem; font-weight: 600; color: var(--text-secondary); }
+.daily-amount { font-family: var(--font-mono); font-size: 2rem; font-weight: 700; letter-spacing: -1px; transition: color 0.4s; }
+
+.daily-result-box.profit    .daily-amount { color: var(--green); }
+.daily-result-box.loss      .daily-amount { color: var(--red);   }
+.daily-result-box.break-even .daily-amount { color: var(--gold); }
+
+/* ------------------------------------------------------------------
+   14. Footer
+------------------------------------------------------------------ */
+.footer {
+  text-align: center; padding: 24px 20px;
+  color: var(--text-muted); font-size: 0.83rem;
+  border-top: 1px solid var(--border);
+}
+
+.footer-name {
+  color: var(--accent);
+  font-weight: 700;
+  text-shadow: 0 0 12px var(--accent-glow);
+}
+
+/* ------------------------------------------------------------------
+   15. Animations
+------------------------------------------------------------------ */
+@keyframes fadeSlideUp {
+  from { opacity: 0; transform: translateY(18px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@keyframes expand-line {
+  from { width: 0; opacity: 0; }
+  to   { width: 60px; opacity: 1; }
+}
+
+@keyframes bounce-in {
+  0%   { transform: scale(0.3); opacity: 0; }
+  60%  { transform: scale(1.15); }
+  80%  { transform: scale(0.95); }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+@keyframes shimmer {
+  0%   { background-position: 0% center; }
+  100% { background-position: 200% center; }
+}
+
+/* ------------------------------------------------------------------
+   16. Responsive — Tablet & Mobile
+------------------------------------------------------------------ */
+
+/* ── Tablet: stack daily columns ── */
+/* ==============================================================
+   RESPONSIVE — Full device coverage
+   Breakpoints:
+     xs  : < 360px  (very old / small phones)
+     sm  : < 480px  (small phones)
+     md  : < 640px  (normal phones)
+     lg  : < 780px  (large phones / small tablets)
+     xl  : < 1024px (tablets)
+============================================================== */
+
+/* ── Large phones / small tablets (< 780px) ── */
+@media (max-width: 780px) {
+  .main { padding: 24px 14px 50px; }
+
+  /* Daily table stacks to single column */
+  .daily-columns {
+    grid-template-columns: 1fr;
+    gap: 14px;
+  }
+}
+
+/* ── Normal phones (< 640px) ── */
+@media (max-width: 640px) {
+  .main { padding: 20px 12px 44px; }
+
+  .page-title { font-size: 1.7rem; }
+
+  .card-body       { padding: 22px 16px 18px; }
+  .results-panel   { padding: 18px 16px; }
+  .daily-results-panel { padding: 16px; }
+
+  /* Installments action buttons stack */
+  .action-row { flex-direction: column; }
+  .action-row .btn-reset { width: 100%; justify-content: center; }
+
+  /* Daily action bar stacks */
+  .daily-action-bar { flex-direction: column; }
+  .daily-action-bar .btn-reset { width: 100%; justify-content: center; }
+
+  /* Result values */
+  .result-value.big { font-size: 1.2rem; }
+  .daily-amount     { font-size: 1.75rem; }
+
+  /* Table cells smaller padding */
+  .daily-table th,
+  .daily-table td { padding: 6px 6px; }
+}
+
+/* ── Small phones (< 480px) ── */
+@media (max-width: 480px) {
+  .header { padding: 0 10px; }
+  .header-inner { padding: 8px 0 10px; }
+
+  .owner-name {
+    font-size: 0.95rem;
+    letter-spacing: 1px;
+    margin-bottom: 8px;
+  }
+
+  /* Nav: keep text visible but smaller */
+  .nav { width: 100%; }
+  .nav-btn {
+    flex: 1;
+    justify-content: center;
+    padding: 8px 6px;
+    font-size: 0.78rem;
+    gap: 4px;
+  }
+  .nav-icon { font-size: 0.85rem; }
+
+  .main { padding: 16px 10px 40px; }
+
+  .card-body     { padding: 18px 12px 16px; }
+  .results-panel { padding: 16px 12px; }
+
+  .page-title    { font-size: 1.5rem; }
+  .page-subtitle { font-size: 0.85rem; }
+
+  /* Selector columns: keep side-by-side but tighter */
+  .selector-columns { gap: 8px; }
+  .sel-btn { padding: 8px 4px; font-size: 0.8rem; }
+  .selector-col-title { font-size: 0.68rem; }
+
+  /* Duration selector (old .dur-btn if any remain) */
+  .dur-btn { font-size: 0.82rem; padding: 10px 4px; }
+
+  /* Input fields */
+  .field-input  { font-size: 0.95rem; padding: 11px 14px; padding-left: 48px; }
+  .input-unit   { font-size: 0.7rem; left: 10px; }
+  .field-label  { font-size: 0.78rem; }
+
+  /* Buttons */
+  .btn-calc  { padding: 13px 16px; font-size: 0.92rem; }
+  .btn-reset { padding: 13px 14px; font-size: 0.88rem; }
+
+  /* Results */
+  .result-item    { padding: 11px 12px; }
+  .result-label   { font-size: 0.8rem; }
+  .result-value   { font-size: 0.88rem; }
+  .result-value.big { font-size: 1.1rem; }
+  .result-duration-note { font-size: 0.75rem; }
+
+  /* Daily table */
+  .daily-col-header { flex-wrap: wrap; gap: 6px; padding: 12px 14px 10px; }
+  .col-title  { font-size: 0.9rem; }
+  .col-badge  { font-size: 0.78rem; }
+  .daily-amount { font-size: 1.55rem; }
+  .daily-icon   { font-size: 2.2rem; }
+
+  /* Add-row button */
+  .btn-add-row { font-size: 0.8rem; padding: 8px; }
+}
+
+/* ── Very small phones (< 360px) — e.g. old iPhones, budget Androids ── */
+@media (max-width: 360px) {
+  .owner-name { font-size: 0.82rem; gap: 6px; }
+  .owner-dot  { width: 4px; height: 4px; }
+
+  .nav-btn span:not(.nav-icon) { display: none; } /* icon only on tiny screens */
+  .nav-btn { padding: 9px 0; }
+
+  .page-title   { font-size: 1.3rem; }
+  .card-body    { padding: 14px 10px; }
+  .field-input  { font-size: 0.88rem; }
+
+  .sel-btn { font-size: 0.72rem; padding: 7px 3px; }
+
+  .result-value.big { font-size: 1rem; }
+  .daily-amount     { font-size: 1.3rem; }
+
+  .btn-calc  { font-size: 0.85rem; padding: 12px; }
+  .btn-reset { font-size: 0.82rem; padding: 12px; }
+}
+
+/* ── Landscape orientation on small phones ── */
+@media (max-height: 500px) and (orientation: landscape) {
+  .header-inner { padding: 6px 0 8px; }
+  .owner-name   { margin-bottom: 6px; font-size: 0.9rem; }
+  .main         { padding: 12px 14px 30px; }
+  .page-hero    { margin-bottom: 14px; }
+  .page-title   { font-size: 1.3rem; margin-bottom: 4px; }
+  .page-subtitle { display: none; }
+  .card-body    { padding: 14px 16px 12px; }
+}
+
+/* ------------------------------------------------------------------
+   Amount cell — visually distinct so user knows it's the input field
+------------------------------------------------------------------ */
+.td-amt-cell {
+  width: 140px;
+}
+
+/* Amount input gets a highlighted background so it stands out */
+.tbl-amt-input {
+  background: rgba(59, 130, 246, 0.08) !important;
+  border-bottom: 1px solid rgba(59, 130, 246, 0.4) !important;
+  border-radius: 6px;
+  padding: 5px 8px !important;
+  font-weight: 600;
+  color: var(--text-primary) !important;
+  width: 100%;
+}
+
+.tbl-amt-input:focus {
+  background: rgba(59, 130, 246, 0.18) !important;
+  border-bottom-color: var(--blue-400) !important;
+  box-shadow: 0 2px 8px rgba(59,130,246,0.2);
+}
+
+.tbl-amt-input::placeholder {
+  color: var(--text-muted);
+  font-size: 0.78rem;
+  font-style: italic;
+}
+
+/* Description input — more subtle */
+.tbl-desc-input {
+  color: var(--text-secondary);
+  font-size: 0.82rem;
+}
+
+/* Amount column header — highlight it */
+.th-amt {
+  color: var(--blue-300) !important;
+  font-size: 0.8rem !important;
+}
+
+
+/* ------------------------------------------------------------------
+   Selector Columns — Duration + Rate (Installments Page)
+------------------------------------------------------------------ */
+.selector-columns {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+
+.selector-col {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+
+.selector-col-title {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  padding-bottom: 4px;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 2px;
+}
+
+/* Shared button style for both columns */
+.sel-btn {
+  display: block;
+  width: 100%;
+  padding: 10px 12px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+  background: var(--bg-elevated);
+  color: var(--text-secondary);
+  font-family: var(--font-arabic);
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.18s ease;
+  text-align: center;
+}
+
+.sel-btn:hover {
+  border-color: var(--blue-500);
+  color: var(--blue-400);
+  background: var(--bg-hover);
+  transform: translateX(-2px);
+}
+
+/* Active duration button — blue */
+.sel-btn:not(.rate-btn).active {
+  background: linear-gradient(135deg, rgba(59,130,246,0.25), rgba(37,99,235,0.15));
+  border-color: var(--blue-400);
+  color: var(--blue-300);
+  box-shadow: 0 0 12px rgba(59,130,246,0.25);
+}
+
+/* Active rate button — cyan/accent */
+.sel-btn.rate-btn.active {
+  background: linear-gradient(135deg, rgba(0,212,255,0.18), rgba(59,130,246,0.12));
+  border-color: var(--accent);
+  color: var(--accent);
+  box-shadow: 0 0 12px var(--accent-glow);
+}
+
+/* selector-columns responsive handled in main media queries above */
+
+/* ------------------------------------------------------------------
+   Base robustness — prevent overflow on all screens
+------------------------------------------------------------------ */
+html, body {
+  overflow-x: hidden;
+  max-width: 100vw;
+}
+
+img, table, input, button {
+  max-width: 100%;
+}
+
+.card {
+  word-break: break-word;
+}
+
+/* Ensure inputs never exceed viewport */
+.field-input, .tbl-input {
+  box-sizing: border-box;
+  max-width: 100%;
+}
+  </style>
+</head>
+<body>
+
+  <!-- ============================================================
+       HEADER / NAVBAR
+  ============================================================ -->
+  <header class="header">
+    <div class="header-inner">
+
+      <div class="owner-name">
+        <span class="owner-dot"></span>
+        Ahmed El-aref
+        <span class="owner-dot"></span>
+      </div>
+
+      <nav class="nav">
+        <button class="nav-btn active" data-target="installments" onclick="switchPage('installments')">
+          <span class="nav-icon">📦</span>
+          <span>حاسبة الأقساط</span>
+        </button>
+        <button class="nav-btn" data-target="daily" onclick="switchPage('daily')">
+          <span class="nav-icon">📊</span>
+          <span>الحاسبة اليومية</span>
+        </button>
+      </nav>
+
+    </div>
+  </header>
+
+  <!-- ============================================================
+       MAIN CONTENT
+  ============================================================ -->
+  <main class="main">
+
+    <!-- ==========================================
+         PAGE 1: حاسبة الأقساط
+    ========================================== -->
+    <section id="page-installments" class="page active">
+
+      <div class="page-hero">
+        <h1 class="page-title">حاسبة <span class="accent">الأقساط</span></h1>
+        <p class="page-subtitle">احسب قسطك الشهري بسهولة وسرعة</p>
+        <div class="title-line"></div>
+      </div>
+
+      <div class="card">
+        <div class="card-body">
+
+          <div class="field-group">
+            <label class="field-label" for="cashPrice">
+              <span class="label-icon">💵</span> السعر الكاش
+            </label>
+            <div class="input-wrapper">
+              <input type="number" id="cashPrice" class="field-input"
+                placeholder="أدخل السعر الكاش" min="0" oninput="clearInstResults()" />
+              <span class="input-unit">ج.م</span>
+            </div>
+            <span class="field-error" id="cashPriceError"></span>
+          </div>
+
+          <div class="field-group">
+            <label class="field-label" for="downPayment">
+              <span class="label-icon">💳</span> المقدم
+            </label>
+            <div class="input-wrapper">
+              <input type="number" id="downPayment" class="field-input"
+                placeholder="أدخل قيمة المقدم" min="0" oninput="clearInstResults()" />
+              <span class="input-unit">ج.م</span>
+            </div>
+            <span class="field-error" id="downPaymentError"></span>
+          </div>
+
+          <div class="field-group">
+            <label class="field-label">
+              <span class="label-icon">⚙️</span> اختر المدة والنسبة
+            </label>
+            <div class="selector-columns">
+
+              <!-- Column 1: Duration -->
+              <div class="selector-col">
+                <div class="selector-col-title">🗓️ المدة</div>
+                <button class="sel-btn active" data-months="3"  onclick="selectDuration(this)">3 شهور</button>
+                <button class="sel-btn"        data-months="6"  onclick="selectDuration(this)">6 شهور</button>
+                <button class="sel-btn"        data-months="10" onclick="selectDuration(this)">10 شهور</button>
+                <button class="sel-btn"        data-months="12" onclick="selectDuration(this)">12 شهر</button>
+                <button class="sel-btn"        data-months="15" onclick="selectDuration(this)">15 شهر</button>
+                <button class="sel-btn"        data-months="20" onclick="selectDuration(this)">20 شهر</button>
+              </div>
+
+              <!-- Column 2: Interest Rate -->
+              <div class="selector-col">
+                <div class="selector-col-title">📊 النسبة</div>
+                <button class="sel-btn rate-btn" data-rate="0"    onclick="selectRate(this)">بدون نسبة</button>
+                <button class="sel-btn rate-btn" data-rate="15"   onclick="selectRate(this)">15%</button>
+                <button class="sel-btn rate-btn" data-rate="17.5" onclick="selectRate(this)">17.5%</button>
+                <button class="sel-btn rate-btn active" data-rate="20"   onclick="selectRate(this)">20%</button>
+                <button class="sel-btn rate-btn" data-rate="25"   onclick="selectRate(this)">25%</button>
+                <button class="sel-btn rate-btn" data-rate="30"   onclick="selectRate(this)">30%</button>
+                <button class="sel-btn rate-btn" data-rate="35"   onclick="selectRate(this)">35%</button>
+                <button class="sel-btn rate-btn" data-rate="40"   onclick="selectRate(this)">40%</button>
+                <button class="sel-btn rate-btn" data-rate="50"   onclick="selectRate(this)">50%</button>
+              </div>
+
+            </div>
+          </div>
+
+          <div class="action-row">
+            <button class="btn-calc"  onclick="calculateInstallments()"><span class="btn-icon">⚡</span> احسب الآن</button>
+            <button class="btn-reset" onclick="resetInstallments()"><span class="btn-icon">🔄</span> إعادة تعيين</button>
+          </div>
+        </div>
+
+        <div class="results-panel" id="instResults">
+          <div class="results-title"><span>📈</span> النتائج</div>
+          <div class="results-grid">
+            <div class="result-item">
+              <span class="result-label">المبلغ بعد المقدم</span>
+              <span class="result-value" id="res-afterDown">—</span>
+            </div>
+            <div class="result-item accent-item">
+              <span class="result-label" id="res-rateLabel">بعد إضافة النسبة</span>
+              <span class="result-value" id="res-afterInterest">—</span>
+            </div>
+            <div class="result-item highlight-item">
+              <span class="result-label">القسط الشهري</span>
+              <span class="result-value big" id="res-monthly">—</span>
+            </div>
+          </div>
+          <div class="result-duration-note" id="res-durationNote"></div>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- ==========================================
+         PAGE 2: الحاسبة اليومية
+    ========================================== -->
+    <section id="page-daily" class="page">
+
+      <div class="page-hero">
+        <h1 class="page-title">الحاسبة <span class="accent">اليومية</span></h1>
+        <p class="page-subtitle">سجّل واردك وصادرك بالتفصيل</p>
+        <div class="title-line"></div>
+      </div>
+
+      <div class="daily-columns">
+
+        <!-- INCOME TABLE -->
+        <div class="daily-col card">
+          <div class="daily-col-header income-header">
+            <div class="col-title-wrap">
+              <span class="col-icon">📥</span>
+              <span class="col-title">الوارد</span>
+            </div>
+            <span class="col-badge income-badge" id="incomeTotal">0 ج.م</span>
+          </div>
+          <div class="table-scroll">
+            <table class="daily-table" id="incomeTable">
+              <thead>
+                <tr>
+                  <th class="th-num">#</th>
+                  <th class="th-amt">💰 المبلغ (ج.م)</th>
+                  <th class="th-del"></th>
+                </tr>
+              </thead>
+              <tbody id="incomeTbody"></tbody>
+            </table>
+          </div>
+          <button class="btn-add-row income-add" onclick="addRow('income')">
+            ＋ إضافة خانة
+          </button>
+        </div>
+
+        <!-- EXPENSE TABLE -->
+        <div class="daily-col card">
+          <div class="daily-col-header expense-header">
+            <div class="col-title-wrap">
+              <span class="col-icon">📤</span>
+              <span class="col-title">الصادر</span>
+            </div>
+            <span class="col-badge expense-badge" id="expenseTotal">0 ج.م</span>
+          </div>
+          <div class="table-scroll">
+            <table class="daily-table" id="expenseTable">
+              <thead>
+                <tr>
+                  <th class="th-num">#</th>
+                  <th class="th-amt">💰 المبلغ (ج.م)</th>
+                  <th class="th-del"></th>
+                </tr>
+              </thead>
+              <tbody id="expenseTbody"></tbody>
+            </table>
+          </div>
+          <button class="btn-add-row expense-add" onclick="addRow('expense')">
+            ＋ إضافة خانة
+          </button>
+        </div>
+
+      </div>
+
+      <div class="daily-action-bar">
+        <button class="btn-calc wide-btn" onclick="calculateDaily()">
+          <span class="btn-icon">⚡</span> احسب الصافي
+        </button>
+        <button class="btn-reset" onclick="resetDaily()">
+          <span class="btn-icon">🔄</span> إعادة تعيين
+        </button>
+      </div>
+
+      <div class="results-panel daily-results-panel" id="dailyResults">
+        <div class="daily-result-box" id="dailyResultBox">
+          <div class="daily-icon"   id="dailyIcon">—</div>
+          <div class="daily-label"  id="dailyLabel">—</div>
+          <div class="daily-amount" id="dailyAmount">—</div>
+        </div>
+      </div>
+
+    </section>
+
+  </main>
+
+  <!-- ============================================================
+       FOOTER
+  ============================================================ -->
+  <footer class="footer">
+    <p>جميع الحقوق محفوظة لـ <span class="footer-name">Ahmed El-aref</span> &copy; 2025</p>
+  </footer>
+
+  <script>
+/* ================================================================
+   SmartCalc — script.js
+   Logic for: Installments Calculator & Daily Table Calculator
+================================================================ */
+
+/* ------------------------------------------------------------------
+   Global State
+------------------------------------------------------------------ */
+
+/* ================================================================
+   🔊 SOUND ENGINE — Web Audio API (no external files needed)
+================================================================ */
+var AudioCtx = window.AudioContext || window.webkitAudioContext;
+var _actx = null;
+
+function getACtx() {
+  if (!_actx) _actx = new AudioCtx();
+  return _actx;
+}
+
+/**
+ * Core tone generator
+ * @param {number}  freq      - Hz
+ * @param {string}  type      - oscillator waveform
+ * @param {number}  duration  - seconds
+ * @param {number}  volume    - 0..1
+ * @param {number}  startTime - AudioContext time (0 = now)
+ * @param {string}  env       - 'pluck'|'pad'|'click'
+ */
+function tone(freq, type, duration, volume, startTime, env) {
+  var ctx  = getACtx();
+  var osc  = ctx.createOscillator();
+  var gain = ctx.createGain();
+  osc.connect(gain);
+  gain.connect(ctx.destination);
+  osc.type      = type || 'sine';
+  osc.frequency.setValueAtTime(freq, startTime);
+  var t = startTime;
+  if (env === 'pluck') {
+    gain.gain.setValueAtTime(volume, t);
+    gain.gain.exponentialRampToValueAtTime(0.001, t + duration);
+  } else if (env === 'click') {
+    gain.gain.setValueAtTime(volume, t);
+    gain.gain.linearRampToValueAtTime(0, t + duration);
+  } else {
+    gain.gain.setValueAtTime(0, t);
+    gain.gain.linearRampToValueAtTime(volume, t + 0.02);
+    gain.gain.linearRampToValueAtTime(0, t + duration);
+  }
+  osc.start(t);
+  osc.stop(t + duration + 0.05);
+}
+
+/** Noise burst for percussive effects */
+function noise(duration, volume, startTime) {
+  var ctx    = getACtx();
+  var frames = Math.floor(ctx.sampleRate * duration);
+  var buf    = ctx.createBuffer(1, frames, ctx.sampleRate);
+  var data   = buf.getChannelData(0);
+  for (var i = 0; i < frames; i++) data[i] = (Math.random() * 2 - 1);
+  var src    = ctx.createBufferSource();
+  src.buffer = buf;
+  var gain   = ctx.createGain();
+  var filter = ctx.createBiquadFilter();
+  filter.type            = 'bandpass';
+  filter.frequency.value = 1200;
+  filter.Q.value         = 0.8;
+  src.connect(filter);
+  filter.connect(gain);
+  gain.connect(ctx.destination);
+  gain.gain.setValueAtTime(volume, startTime);
+  gain.gain.exponentialRampToValueAtTime(0.001, startTime + duration);
+  src.start(startTime);
+  src.stop(startTime + duration + 0.05);
+}
+
+/**
+ * Master sound dispatcher
+ * @param {string} id - sound name
+ */
+function playSound(id) {
+  try {
+    var ctx = getACtx();
+    var now = ctx.currentTime;
+
+    switch (id) {
+
+      /* ── Keyboard tick when typing a number ── */
+      case 'tick':
+        noise(0.04, 0.12, now);
+        tone(1800, 'square', 0.03, 0.06, now, 'click');
+        break;
+
+      /* ── Row added ── */
+      case 'addRow':
+        tone(523,  'sine', 0.08, 0.18, now,        'pluck');
+        tone(659,  'sine', 0.08, 0.18, now + 0.07, 'pluck');
+        tone(784,  'sine', 0.10, 0.18, now + 0.14, 'pluck');
+        break;
+
+      /* ── Row deleted ── */
+      case 'delete':
+        tone(400, 'sawtooth', 0.06, 0.15, now,        'click');
+        tone(300, 'sawtooth', 0.06, 0.12, now + 0.06, 'click');
+        noise(0.08, 0.08, now);
+        break;
+
+      /* ── Calculate button pressed ── */
+      case 'calculate':
+        noise(0.05, 0.1, now);
+        tone(440, 'sine', 0.06, 0.2, now + 0.02, 'pluck');
+        tone(550, 'sine', 0.06, 0.2, now + 0.05, 'pluck');
+        break;
+
+      /* ── Profit result ── */
+      case 'profit':
+        var notes = [523, 659, 784, 1047];
+        notes.forEach(function(f, i) {
+          tone(f, 'sine', 0.18, 0.22, now + i * 0.1, 'pluck');
+        });
+        // Sparkle layer
+        tone(2093, 'sine', 0.08, 0.08, now + 0.35, 'pluck');
+        tone(2637, 'sine', 0.08, 0.06, now + 0.42, 'pluck');
+        break;
+
+      /* ── Loss result ── */
+      case 'loss':
+        tone(330, 'sawtooth', 0.2, 0.2, now,        'pad');
+        tone(277, 'sawtooth', 0.2, 0.2, now + 0.18, 'pad');
+        tone(220, 'sawtooth', 0.3, 0.2, now + 0.36, 'pad');
+        noise(0.1, 0.06, now + 0.36);
+        break;
+
+      /* ── Break-even ── */
+      case 'breakEven':
+        tone(440, 'triangle', 0.15, 0.15, now,        'pluck');
+        tone(440, 'triangle', 0.15, 0.10, now + 0.2,  'pluck');
+        tone(370, 'triangle', 0.20, 0.12, now + 0.38, 'pluck');
+        break;
+
+      /* ── Reset button ── */
+      case 'reset':
+        tone(600, 'triangle', 0.06, 0.14, now,        'click');
+        tone(400, 'triangle', 0.06, 0.14, now + 0.07, 'click');
+        tone(250, 'triangle', 0.08, 0.14, now + 0.14, 'click');
+        noise(0.06, 0.05, now);
+        break;
+
+      /* ── Nav tab switch ── */
+      case 'nav':
+        tone(880, 'sine', 0.06, 0.12, now,        'pluck');
+        tone(1100,'sine', 0.06, 0.10, now + 0.06, 'pluck');
+        break;
+
+      /* ── Installment calculate ── */
+      case 'instCalc':
+        noise(0.04, 0.08, now);
+        [523, 659, 784, 880, 1047].forEach(function(f, i) {
+          tone(f, 'sine', 0.12, 0.15, now + i * 0.07, 'pluck');
+        });
+        break;
+
+      /* ── Error / validation fail ── */
+      case 'error':
+        tone(220, 'square', 0.08, 0.18, now,        'click');
+        tone(196, 'square', 0.08, 0.18, now + 0.1,  'click');
+        noise(0.06, 0.07, now + 0.05);
+        break;
+
+      /* ── Badge total update ping ── */
+      case 'ping':
+        tone(1200, 'sine', 0.05, 0.08, now, 'pluck');
+        break;
+    }
+  } catch(e) { /* silence any audio errors */ }
+}
+
+let selectedMonths = 3;   // Default installment duration
+let selectedRate   = 20;  // Default interest rate (%)
+const INITIAL_ROWS = 10;  // Rows built at start for each table
+
+/* ------------------------------------------------------------------
+   1. Navigation
+------------------------------------------------------------------ */
+function switchPage(target) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+
+  const page = document.getElementById('page-' + target);
+  if (page) {
+    page.classList.add('active');
+    page.style.animation = 'none';
+    void page.offsetWidth;
+    page.style.animation = '';
+  }
+
+  const btn = document.querySelector('.nav-btn[data-target="' + target + '"]');
+  if (btn) btn.classList.add('active');
+}
+
+/* ------------------------------------------------------------------
+   2. Duration Selector
+------------------------------------------------------------------ */
+function selectDuration(btn) {
+  // Remove active only from duration buttons (not rate buttons)
+  document.querySelectorAll('.sel-btn:not(.rate-btn)').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  selectedMonths = parseInt(btn.getAttribute('data-months'), 10);
+  clearInstResults();
+}
+
+function selectRate(btn) {
+  // Remove active only from rate buttons
+  document.querySelectorAll('.sel-btn.rate-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  selectedRate = parseFloat(btn.getAttribute('data-rate'));
+  clearInstResults();
+}
+
+/* ------------------------------------------------------------------
+   3. Installments Calculator
+------------------------------------------------------------------ */
+function calculateInstallments() {
+  var cashInput = document.getElementById('cashPrice');
+  var downInput = document.getElementById('downPayment');
+  var cash  = parseFloat(cashInput.value);
+  var down  = parseFloat(downInput.value);
+
+  clearError('cashPriceError');
+  clearError('downPaymentError');
+
+  var err = false;
+
+  if (isNaN(cash) || cashInput.value.trim() === '') {
+    showError('cashPriceError', '⚠️ يرجى إدخال السعر الكاش'); err = true;
+  } else if (cash <= 0) {
+    showError('cashPriceError', '⚠️ يجب أن يكون السعر أكبر من صفر'); err = true;
+  }
+
+  if (isNaN(down) || downInput.value.trim() === '') {
+    showError('downPaymentError', '⚠️ يرجى إدخال قيمة المقدم'); err = true;
+  } else if (down < 0) {
+    showError('downPaymentError', '⚠️ لا يمكن أن يكون المقدم سالباً'); err = true;
+  } else if (!err && down >= cash) {
+    showError('downPaymentError', '⚠️ المقدم يجب أن يكون أقل من السعر الكاش'); err = true;
+  }
+
+  if (err) { playSound('error'); return; }
+
+  playSound('instCalc');
+  var afterDown     = cash - down;
+  var multiplier    = 1 + (selectedRate / 100);
+  var afterInterest = afterDown * multiplier;
+  var monthly       = afterInterest / selectedMonths;
+
+  document.getElementById('res-afterDown').textContent      = formatNum(afterDown)     + ' ج.م';
+  document.getElementById('res-afterInterest').textContent  = formatNum(afterInterest) + ' ج.م';
+  document.getElementById('res-monthly').textContent        = formatNum(monthly)       + ' ج.م';
+  var rateText = selectedRate === 0 ? 'بدون نسبة' : 'بعد إضافة نسبة ' + selectedRate + '%';
+  var noteText = selectedRate === 0
+    ? '* المبلغ مقسّم على ' + selectedMonths + ' شهر بدون أي فائدة'
+    : '* المبلغ مقسّم على ' + selectedMonths + ' شهر بعد إضافة نسبة ' + selectedRate + '% فائدة';
+  document.getElementById('res-rateLabel').textContent      = rateText;
+  document.getElementById('res-durationNote').textContent   = noteText;
+
+  showResults('instResults');
+}
+
+function resetInstallments() {
+  playSound('reset');
+  document.getElementById('cashPrice').value   = '';
+  document.getElementById('downPayment').value = '';
+  document.querySelectorAll('.sel-btn').forEach(b => b.classList.remove('active'));
+  document.querySelector('.sel-btn[data-months="3"]').classList.add('active');
+  document.querySelector('.sel-btn[data-rate="20"]').classList.add('active');
+  selectedMonths = 3;
+  selectedRate   = 20;
+  var rLabel = document.getElementById('res-rateLabel');
+  if (rLabel) rLabel.textContent = 'بعد إضافة النسبة';
+  clearError('cashPriceError');
+  clearError('downPaymentError');
+  hideResults('instResults');
+}
+
+function clearInstResults() {
+  hideResults('instResults');
+  clearError('cashPriceError');
+  clearError('downPaymentError');
+}
+
+/* ------------------------------------------------------------------
+   4. Daily Table — Row Management
+------------------------------------------------------------------ */
+
+/**
+ * Adds one row to the income or expense tbody.
+ * Elements are created via createElement (NOT innerHTML) to avoid
+ * any browser quirks with inline event handlers inside tables.
+ *
+ * @param {string} type - 'income' | 'expense'
+ */
+function addRow(type) {
+  var tbodyId = (type === 'income') ? 'incomeTbody' : 'expenseTbody';
+  var tbody   = document.getElementById(tbodyId);
+  var rowNum  = tbody.rows.length + 1;
+
+  /* ── Build cells ── */
+  var tr = document.createElement('tr');
+
+  // # (row number)
+  var tdNum = document.createElement('td');
+  tdNum.className   = 'td-num';
+  tdNum.textContent = rowNum;
+
+  // Amount input
+  var tdAmt  = document.createElement('td');
+  tdAmt.className = 'td-amt-cell';
+  var inpAmt = document.createElement('input');
+  inpAmt.type        = 'number';
+  inpAmt.className   = 'tbl-input tbl-amt-input';
+  inpAmt.placeholder = 'أدخل المبلغ...';
+  inpAmt.min         = '0';
+  inpAmt.setAttribute('data-type', type);
+  inpAmt.addEventListener('input', function () {
+    recalcBadge(type);
+    playSound('tick');
+  });
+  tdAmt.appendChild(inpAmt);
+
+  // Delete button
+  var tdDel = document.createElement('td');
+  var btnDel = document.createElement('button');
+  btnDel.className   = 'btn-del-row';
+  btnDel.title       = 'حذف الصف';
+  btnDel.textContent = '✕';
+  btnDel.addEventListener('click', function () {
+    deleteRow(btnDel, type);
+    playSound('delete');
+  });
+  tdDel.appendChild(btnDel);
+
+  // Column order: # | Amount | Delete
+  tr.appendChild(tdNum);
+  tr.appendChild(tdAmt);
+  tr.appendChild(tdDel);
+
+  tbody.appendChild(tr);
+  recalcBadge(type);
+  playSound('addRow');
+}
+
+/**
+ * Deletes a row, re-numbers the rest, updates badge.
+ */
+function deleteRow(btn, type) {
+  var tr    = btn.closest('tr');
+  var tbody = tr.parentElement;
+
+  tbody.removeChild(tr);
+  renumberRows(tbody);
+  recalcBadge(type);
+}
+
+/**
+ * Re-numbers .td-num cells after a deletion.
+ */
+function renumberRows(tbody) {
+  var rows = tbody.getElementsByTagName('tr');
+  for (var i = 0; i < rows.length; i++) {
+    var numCell = rows[i].querySelector('.td-num');
+    if (numCell) numCell.textContent = i + 1;
+  }
+}
+
+/* ------------------------------------------------------------------
+   5. Daily Table — Summing (The Fixed Core)
+------------------------------------------------------------------ */
+
+/**
+ * Sums all amount inputs in a given tbody.
+ * Uses getElementsByTagName for maximum browser compatibility.
+ *
+ * @param {string} tbodyId - e.g. 'incomeTbody'
+ * @returns {number}
+ */
+function getTableSum(tbodyId) {
+  var tbody = document.getElementById(tbodyId);
+  if (!tbody) return 0;
+
+  var total  = 0;
+  var inputs = tbody.getElementsByTagName('input');
+
+  for (var i = 0; i < inputs.length; i++) {
+    // Only process number inputs (amount fields), skip text inputs (description)
+    if (inputs[i].type === 'number') {
+      var raw = inputs[i].value.trim();
+      if (raw !== '') {
+        var v = parseFloat(raw);
+        if (!isNaN(v)) {
+          total += v;
+        }
+      }
+    }
+  }
+
+  return total;
+}
+
+/**
+ * Recalculates and displays the badge total for one column.
+ * @param {string} type - 'income' | 'expense'
+ */
+function recalcBadge(type) {
+  var tbodyId = (type === 'income') ? 'incomeTbody' : 'expenseTbody';
+  var badgeId = (type === 'income') ? 'incomeTotal'  : 'expenseTotal';
+  var total   = getTableSum(tbodyId);
+  document.getElementById(badgeId).textContent = formatNum(total) + ' ج.م';
+  playSound('ping');
+}
+
+/* ------------------------------------------------------------------
+   6. Daily Calculator — Main Calculate
+------------------------------------------------------------------ */
+function calculateDaily() {
+  var income   = getTableSum('incomeTbody');
+  var expenses = getTableSum('expenseTbody');
+  var net      = income - expenses;
+
+  var box    = document.getElementById('dailyResultBox');
+  var icon   = document.getElementById('dailyIcon');
+  var label  = document.getElementById('dailyLabel');
+  var amount = document.getElementById('dailyAmount');
+
+  box.classList.remove('profit', 'loss', 'break-even');
+
+  playSound('calculate');
+  if (net > 0) {
+    box.classList.add('profit');
+    icon.textContent   = '📈';
+    label.textContent  = 'صافي الربح اليومي';
+    amount.textContent = '+ ' + formatNum(net) + ' ج.م';
+    setTimeout(function(){ playSound('profit'); }, 300);
+  } else if (net < 0) {
+    box.classList.add('loss');
+    icon.textContent   = '📉';
+    label.textContent  = 'خسارة اليوم';
+    amount.textContent = '- ' + formatNum(Math.abs(net)) + ' ج.م';
+    setTimeout(function(){ playSound('loss'); }, 300);
+  } else {
+    box.classList.add('break-even');
+    icon.textContent   = '⚖️';
+    label.textContent  = 'التعادل التام';
+    amount.textContent = formatNum(0) + ' ج.م';
+    setTimeout(function(){ playSound('breakEven'); }, 300);
+  }
+
+  // Re-trigger icon bounce animation
+  icon.style.animation = 'none';
+  void icon.offsetWidth;
+  icon.style.animation = '';
+
+  showResults('dailyResults');
+}
+
+/**
+ * Resets daily tables to 10 empty rows each.
+ */
+function resetDaily() {
+  playSound('reset');
+  document.getElementById('incomeTbody').innerHTML  = '';
+  document.getElementById('expenseTbody').innerHTML = '';
+
+  for (var i = 0; i < INITIAL_ROWS; i++) addRow('income');
+  for (var i = 0; i < INITIAL_ROWS; i++) addRow('expense');
+
+  document.getElementById('incomeTotal').textContent  = '0 ج.م';
+  document.getElementById('expenseTotal').textContent = '0 ج.م';
+
+  hideResults('dailyResults');
+}
+
+/* ------------------------------------------------------------------
+   7. Shared Utilities
+------------------------------------------------------------------ */
+function showError(id, msg) {
+  var el = document.getElementById(id);
+  if (el) el.textContent = msg;
+}
+
+function clearError(id) {
+  var el = document.getElementById(id);
+  if (el) el.textContent = '';
+}
+
+function showResults(id) {
+  var panel = document.getElementById(id);
+  if (!panel) return;
+  panel.style.display   = 'block';
+  panel.style.animation = 'none';
+  void panel.offsetWidth;
+  panel.style.animation = 'fadeSlideUp 0.45s cubic-bezier(0.22,1,0.36,1) forwards';
+}
+
+function hideResults(id) {
+  var panel = document.getElementById(id);
+  if (panel) panel.style.display = 'none';
+}
+
+/**
+ * Formats a number with thousands separators, up to 2 decimals.
+ * e.g. 10500.5 → "10,500.5"
+ */
+function formatNum(num) {
+  return num.toLocaleString('en-EG', {
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 2
+  });
+}
+
+/* ------------------------------------------------------------------
+   8. Init on DOM Ready
+------------------------------------------------------------------ */
+document.addEventListener('DOMContentLoaded', function () {
+
+  // Build initial 10 rows for each daily table
+  for (var i = 0; i < INITIAL_ROWS; i++) addRow('income');
+  for (var i = 0; i < INITIAL_ROWS; i++) addRow('expense');
+
+  // Installments page: Enter key triggers calculate
+  ['cashPrice', 'downPayment'].forEach(function (id) {
+    var el = document.getElementById(id);
+    if (el) {
+      el.addEventListener('keydown', function (e) {
+        if (e.key === 'Enter') calculateInstallments();
+      });
+    }
+  });
+
+});
+
+  </script>
+</body>
+</html>
