@@ -1,4 +1,4 @@
-name: Build APK
+name: Build APK (No Gradle Wrapper)
 
 on:
   push:
@@ -9,22 +9,22 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: 📥 تحميل المشروع
+      - name: 📥 Checkout project
         uses: actions/checkout@v4
 
-      - name: ☕ تثبيت Java
+      - name: ☕ Setup Java
         uses: actions/setup-java@v4
         with:
           distribution: 'temurin'
           java-version: '17'
 
-      - name: 🔧 إعطاء صلاحية Gradle
-        run: chmod +x ./gradlew
+      - name: 🔧 Install Gradle
+        run: sudo apt-get update && sudo apt-get install -y gradle
 
-      - name: 🏗️ بناء APK
-        run: ./gradlew assembleDebug
+      - name: 🏗️ Build Debug APK
+        run: gradle assembleDebug
 
-      - name: 📦 رفع APK
+      - name: 📦 Upload APK
         uses: actions/upload-artifact@v4
         with:
           name: app-debug
